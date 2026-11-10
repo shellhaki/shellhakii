@@ -102,7 +102,7 @@ export function RepoList({ repos }: { repos: Repo[] }) {
             <li key={r.id}>
               <a
                 href={r.url}
-                className="group flex items-start justify-between gap-6 py-5 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-foreground"
+                className="group flex flex-col gap-3 py-5 sm:flex-row sm:items-start sm:justify-between sm:gap-6 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-foreground"
               >
                 <div className="min-w-0">
                   <h2 className="flex items-center gap-1.5 font-serif text-lg font-medium">
@@ -123,9 +123,9 @@ export function RepoList({ repos }: { repos: Repo[] }) {
                     </p>
                   )}
                 </div>
-                <div className="shrink-0 space-y-1 text-right font-mono text-xs text-muted">
+                <div className="shrink-0 space-y-1 font-mono text-xs text-muted sm:text-right">
                   <p>{monthYear.format(new Date(r.pushedAt))}</p>
-                  <p className="flex items-center justify-end gap-3">
+                  <p className="flex items-center gap-3 sm:justify-end">
                     {r.language && <span>{r.language}</span>}
                     <span className="inline-flex items-center gap-1">
                       <Star className="size-3" aria-hidden /> {r.stars}

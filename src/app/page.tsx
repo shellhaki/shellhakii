@@ -1,5 +1,13 @@
+import Image from "next/image";
 import Link from "next/link";
+import {
+  ContactTeaser,
+  GalleryTeaser,
+  Highlights,
+  LatestWriting,
+} from "@/components/home-sections";
 import { site } from "@/lib/site";
+import pfp from "@/assets/pfp.jpg";
 
 const link =
   "text-foreground underline decoration-muted/50 underline-offset-4 transition-colors hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground";
@@ -7,7 +15,16 @@ const link =
 export default function Home() {
   return (
     <div className="mx-auto w-full max-w-2xl pt-10 sm:pt-16">
-      <h1 className="font-script text-[8.5rem] leading-[0.8] sm:text-[13rem]">
+      <Image
+        src={pfp}
+        alt="Portrait of Excel, also known as haki"
+        priority
+        placeholder="blur"
+        sizes="(min-width: 640px) 112px, 80px"
+        className="size-20 rounded-full object-cover ring-1 ring-line sm:size-28"
+      />
+
+      <h1 className="mt-6 font-script text-[clamp(4rem,34vw,13rem)] leading-[0.8]">
         {site.name}
       </h1>
 
@@ -61,6 +78,11 @@ export default function Home() {
           .
         </p>
       </div>
+
+      <Highlights />
+      <LatestWriting />
+      <GalleryTeaser />
+      <ContactTeaser />
     </div>
   );
 }

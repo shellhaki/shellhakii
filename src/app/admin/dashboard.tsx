@@ -1,9 +1,11 @@
 import { getMedia } from "@/lib/media";
 import { getProjects } from "@/lib/projects";
 import { logout } from "./actions";
+import { CaptionEditor } from "./caption-editor";
 import { DeleteButton } from "./delete-button";
 import { MediaUploader } from "./media-uploader";
 import { ProjectForm } from "./project-form";
+import { ProjectRow } from "./project-row";
 import { ghostButton } from "@/lib/ui";
 
 export async function Dashboard() {
@@ -35,10 +37,7 @@ export async function Dashboard() {
         {projects.length > 0 && (
           <ul className="divide-y divide-line border-y border-line">
             {projects.map((p) => (
-              <li key={p.id} className="flex items-center justify-between gap-4 py-3">
-                <span className="truncate">{p.title}</span>
-                <DeleteButton url={`/api/admin/projects/${p.id}`} label={p.title} />
-              </li>
+              <ProjectRow key={p.id} project={p} />
             ))}
           </ul>
         )}
@@ -52,7 +51,8 @@ export async function Dashboard() {
         {media.length > 0 && (
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             {media.map((m) => (
-              <li key={m.id} className="group relative overflow-hidden rounded-xl bg-pill">
+              <li key={m.id}>
+                <div className="relative overflow-hidden rounded-xl bg-pill">
                 {m.kind === "image" ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -76,6 +76,8 @@ export async function Dashboard() {
                     className="cursor-pointer rounded-full bg-black/60 px-3 py-1 text-xs text-white transition-colors hover:bg-red-600 disabled:opacity-50"
                   />
                 </div>
+                </div>
+                <CaptionEditor id={m.id} caption={m.caption} />
               </li>
             ))}
           </ul>

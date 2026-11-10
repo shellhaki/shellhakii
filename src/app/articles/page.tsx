@@ -34,7 +34,7 @@ export default async function ArticlesPage() {
               <li key={a.id}>
                 <Link
                   href={`/articles/${a.id}`}
-                  className="group flex items-baseline justify-between gap-6 py-5 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-foreground"
+                  className="group flex flex-col gap-1 py-5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-foreground"
                 >
                   <span className="font-serif text-lg font-medium decoration-muted/50 underline-offset-4 group-hover:underline">
                     {a.title}

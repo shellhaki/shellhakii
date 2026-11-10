@@ -13,6 +13,9 @@ async function api<T>(url: string, init: RequestInit): Promise<T> {
 export const post = <T>(url: string, body: unknown) =>
   api<T>(url, { method: "POST", body: JSON.stringify(body) });
 
+export const patch = (url: string, body: unknown) =>
+  api<{ ok: true }>(url, { method: "PATCH", body: JSON.stringify(body) });
+
 export const del = (url: string) => api<{ ok: true }>(url, { method: "DELETE" });
 
 /** Upload a file straight to R2 via a presigned URL. Returns the object key. */

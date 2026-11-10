@@ -28,7 +28,7 @@ function NavView({ pathname }: { pathname: string | null }) {
   return (
     <nav
       aria-label="Main"
-      className="flex items-center gap-1 rounded-full border border-line bg-background/80 p-1 backdrop-blur"
+      className="flex items-center gap-0.5 rounded-full border border-line bg-background/80 p-1 backdrop-blur sm:gap-1"
     >
       {nav.map(({ href, label, icon }) => {
         const Icon = icons[icon];
@@ -40,7 +40,7 @@ function NavView({ pathname }: { pathname: string | null }) {
             href={href}
             aria-label={label}
             aria-current={active ? "page" : undefined}
-            className={`flex h-9 items-center gap-2 rounded-full px-2.5 text-sm font-medium transition-colors hover:bg-line focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground md:px-3 ${
+            className={`flex h-9 items-center gap-2 rounded-full px-2 text-sm font-medium transition-colors hover:bg-line focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground sm:px-2.5 md:px-3 ${
               active ? "bg-line" : ""
             }`}
           >

@@ -11,6 +11,7 @@ export type Project = {
   thumbnailUrl: string | null;
   tags: string[];
   year: number;
+  position: number;
 };
 
 export async function getProjects(limit?: number): Promise<Project[]> {
@@ -24,7 +25,7 @@ export async function getProjects(limit?: number): Promise<Project[]> {
   try {
     const rows = await sql`
       select id, title, summary, url, repo_url, thumbnail_key, tags,
-             extract(year from created_at)::int as year
+             position, extract(year from created_at)::int as year
       from projects
       order by position asc, created_at desc
       limit ${limit ?? 100}
@@ -38,6 +39,7 @@ export async function getProjects(limit?: number): Promise<Project[]> {
       thumbnailUrl: r.thumbnail_key ? publicUrl(r.thumbnail_key) : null,
       tags: r.tags ?? [],
       year: r.year,
+      position: r.position,
     }));
   } catch (err) {
     console.error("getProjects failed", err);

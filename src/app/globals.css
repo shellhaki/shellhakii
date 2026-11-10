@@ -51,6 +51,7 @@ body {
   line-height: 1.85;
   color: var(--muted);
 }
+.article { overflow-wrap: anywhere; }
 .article > * + * { margin-top: 1.5rem; }
 .article h2, .article h3, .article h4 {
   font-family: var(--font-serif);
