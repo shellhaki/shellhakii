@@ -1,0 +1,13 @@
+shellhaki
+
+My name is excel also known as haki, a software that builds systems, work with containers, and builds ai infrastructure
+im the founder of greylabs(url under it github/greylabss) where we build infrastructure for golang
+i am also a gamer,  i play roblox, minecraft and a few others, pc mobile and console
+im also a gopher
+i spend time building backend systems that dont break and that are lightning fast, i also explore some parts of systems engineering
+
+
+i build open source proudcts such as a secrets manager, deployment infrastrcture for golang backends, a backends provisioning system, whatsapp automation and much more 
+
+im 18, studying software engineering at Federal university of technology owerri, nigera, currently looking to collaborate with people from georgia, luxembourg, uae , etc
+
