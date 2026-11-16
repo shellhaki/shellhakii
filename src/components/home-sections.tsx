@@ -6,6 +6,7 @@ import { getArticles, type Article } from "@/lib/medium";
 import { getProjects } from "@/lib/projects";
 import { site } from "@/lib/site";
 import { button } from "@/lib/ui";
+import { SubscribeForm } from "./subscribe-form";
 
 function Section({
   id,
@@ -181,6 +182,22 @@ export async function GalleryTeaser() {
         ))}
       </ul>
     </Section>
+  );
+}
+
+export function SubscribeTeaser() {
+  return (
+    <section aria-labelledby="stay-updated" className="mt-20">
+      <h2 id="stay-updated" className="font-serif text-xl font-semibold tracking-tight">
+        Stay up to date
+      </h2>
+      <p className="mt-2 text-muted">
+        Occasional emails when I ship a new project, repo, article or gallery post. No spam.
+      </p>
+      <div className="mt-5">
+        <SubscribeForm id="home-subscribe" />
+      </div>
+    </section>
   );
 }
 

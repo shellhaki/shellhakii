@@ -12,6 +12,7 @@ export type Repo = {
   forks: number;
   topics: string[];
   pushedAt: string;
+  createdAt: string;
 };
 
 type GithubRepo = {
@@ -25,13 +26,14 @@ type GithubRepo = {
   forks_count: number;
   topics?: string[];
   pushed_at: string;
+  created_at: string;
   fork: boolean;
 };
 
 /** Public, non-fork repos, most recently pushed first. Throws on API failure (not cached). */
 export async function getRepos(): Promise<Repo[]> {
   "use cache";
-  cacheLife("hours");
+  cacheLife({ stale: 60, revalidate: 1800, expire: 86400 });
   cacheTag("repos");
 
   const user = requireEnv("GITHUB_USERNAME");
@@ -65,5 +67,6 @@ export async function getRepos(): Promise<Repo[]> {
       forks: r.forks_count,
       topics: r.topics ?? [],
       pushedAt: r.pushed_at,
+      createdAt: r.created_at,
     }));
 }

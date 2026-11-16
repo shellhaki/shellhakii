@@ -4,8 +4,10 @@ import { logout } from "./actions";
 import { CaptionEditor } from "./caption-editor";
 import { DeleteButton } from "./delete-button";
 import { MediaUploader } from "./media-uploader";
+import { Newsletter } from "./newsletter";
 import { ProjectForm } from "./project-form";
 import { ProjectRow } from "./project-row";
+import { RefreshButton } from "./refresh-button";
 import { ghostButton } from "@/lib/ui";
 
 export async function Dashboard() {
@@ -22,11 +24,14 @@ export async function Dashboard() {
             Upload projects and gallery media
           </p>
         </div>
-        <form action={logout}>
-          <button type="submit" className={ghostButton}>
-            Log out
-          </button>
-        </form>
+        <div className="flex shrink-0 flex-wrap justify-end gap-2">
+          <RefreshButton />
+          <form action={logout}>
+            <button type="submit" className={ghostButton}>
+              Log out
+            </button>
+          </form>
+        </div>
       </div>
 
       <section aria-labelledby="projects-h" className="space-y-6">
@@ -83,6 +88,8 @@ export async function Dashboard() {
           </ul>
         )}
       </section>
+
+      <Newsletter />
     </div>
   );
 }

@@ -66,7 +66,8 @@ function cleanHtml(raw: string, title: string) {
 /** Latest posts from the Medium RSS feed. Throws on failure (so failures are not cached). */
 export async function getArticles(): Promise<Article[]> {
   "use cache";
-  cacheLife("hours");
+  // Refresh every 10 minutes; admin "Refresh site data" clears it immediately.
+  cacheLife({ stale: 60, revalidate: 600, expire: 86400 });
   cacheTag("articles");
 
   const res = await fetch(feedUrl(), { headers: { "User-Agent": "shellhaki-portfolio" } });

@@ -29,6 +29,9 @@ export function Footer() {
       <p className="text-muted">
         © {site.since} / <span className="text-foreground">{site.name}</span>
       </p>
+      <Link href="/subscribe" className={linkClass}>
+        Subscribe
+      </Link>
       <div className="flex items-center gap-5">
         <a href={site.links.github} aria-label="GitHub" className={linkClass}>
           <GithubIcon />

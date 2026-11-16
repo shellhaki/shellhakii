@@ -1,22 +1,8 @@
 import { NextResponse } from "next/server";
 import { requireEnv } from "@/lib/env";
+import { clientIp, rateLimited } from "@/lib/rate-limit";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const LIMIT = 5; // messages
-const WINDOW_MS = 60 * 60 * 1000; // per hour, per IP (best-effort, in-memory)
-const hits = new Map<string, number[]>();
-
-function limited(ip: string) {
-  const now = Date.now();
-  const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
-  if (recent.length >= LIMIT) {
-    hits.set(ip, recent);
-    return true;
-  }
-  hits.set(ip, [...recent, now]);
-  return false;
-}
-
 const err = (message: string, status: number) =>
   NextResponse.json({ error: message }, { status });
 
@@ -43,8 +29,8 @@ export async function POST(req: Request) {
   if (message.length < 10) return err("Message is too short.", 400);
   if (message.length > 4000) return err("Message is too long (max 4000 characters).", 400);
 
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  if (limited(ip)) return err("Too many messages. Try again later.", 429);
+  // 5 messages per hour per IP (best-effort, in-memory).
+  if (rateLimited(`contact:${clientIp(req)}`, 5, 60 * 60 * 1000)) return err("Too many messages. Try again later.", 429);
 
   let config: { key: string; to: string; from: string };
   try {

@@ -5,6 +5,7 @@ import {
   GalleryTeaser,
   Highlights,
   LatestWriting,
+  SubscribeTeaser,
 } from "@/components/home-sections";
 import { site } from "@/lib/site";
 import pfp from "@/assets/pfp.jpg";
@@ -82,6 +83,7 @@ export default function Home() {
       <Highlights />
       <LatestWriting />
       <GalleryTeaser />
+      <SubscribeTeaser />
       <ContactTeaser />
     </div>
   );
