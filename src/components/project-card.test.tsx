@@ -11,6 +11,7 @@ vi.mock("@/components/social/engagement-bar", () => ({
       data-testid="engagement-bar"
       data-target-type={props.targetType}
       data-target-id={props.targetId}
+      data-share-url={props.shareUrl ?? ""}
     >
       <button type="button" onClick={() => props.onCommentsClick?.()}>
         comments
@@ -50,6 +51,24 @@ describe("ProjectCard", () => {
     expect(bar).toHaveAttribute("data-target-type", "project");
     expect(bar).toHaveAttribute("data-target-id", "proj-1");
     expect(screen.queryByTestId("comment-section")).toBeNull();
+  });
+
+  it("PL-1: the card root has an anchor id and scroll offset class", () => {
+    const { container } = render(<ProjectCard project={project} />);
+
+    const article = container.querySelector("article");
+    expect(article).not.toBeNull();
+    expect(article).toHaveAttribute("id", "project-proj-1");
+    expect(article).toHaveClass("scroll-mt-24");
+  });
+
+  it("PL-2: the card passes an anchor shareUrl to EngagementBar", () => {
+    render(<ProjectCard project={project} />);
+
+    expect(screen.getByTestId("engagement-bar")).toHaveAttribute(
+      "data-share-url",
+      "/projects#project-proj-1",
+    );
   });
 
   it("AC-I4: opens an inline comment section on comments click", async () => {

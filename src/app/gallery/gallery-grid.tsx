@@ -18,6 +18,8 @@ export function GalleryGrid({ media }: { media: Media[] }) {
   const [filter, setFilter] = useState<Filter>("all");
   const [open, setOpen] = useState<number | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const deepLinked = useRef(false);
+  const wasOpen = useRef(false);
 
   const items = useMemo(
     () => (filter === "all" ? media : media.filter((m) => m.kind === filter)),
@@ -32,6 +34,36 @@ export function GalleryGrid({ media }: { media: Media[] }) {
   }, [open]);
 
   const current = open !== null ? items[open] : null;
+
+  // Deep link: open the lightbox when the URL carries ?item=<id>.
+  // Runs once on mount only; reads the query in an effect (not during
+  // render) because the page is statically prerendered. State applies in a
+  // microtask so the effect body itself only syncs with the browser.
+  useEffect(() => {
+    if (deepLinked.current) return;
+    deepLinked.current = true;
+    const id = new URLSearchParams(window.location.search).get("item");
+    if (!id) return;
+    const index = media.findIndex((m) => m.id === id);
+    if (index === -1) return;
+    queueMicrotask(() => {
+      setFilter("all");
+      setOpen(index);
+      document.getElementById(`media-${id}`)?.scrollIntoView?.({ block: "center" });
+    });
+  }, [media]);
+
+  // Keep the address bar in sync while the lightbox is open. replaceState
+  // (never pushState) so the back button is not polluted.
+  useEffect(() => {
+    if (current) {
+      wasOpen.current = true;
+      window.history.replaceState(null, "", `/gallery?item=${current.id}`);
+    } else if (wasOpen.current) {
+      window.history.replaceState(null, "", "/gallery");
+    }
+  }, [current]);
+
   const step = (d: number) =>
     setOpen((i) => (i === null ? i : (i + d + items.length) % items.length));
 
@@ -60,7 +92,7 @@ export function GalleryGrid({ media }: { media: Media[] }) {
       ) : (
         <ul className="mt-8 columns-2 gap-3 md:columns-3">
           {items.map((m, i) => (
-            <li key={m.id} className="mb-3 break-inside-avoid">
+            <li key={m.id} id={`media-${m.id}`} className="mb-3 break-inside-avoid">
               <button
                 type="button"
                 onClick={() => setOpen(i)}
@@ -117,7 +149,11 @@ export function GalleryGrid({ media }: { media: Media[] }) {
             either theme. */}
         {current && (
           <div className="dark fixed left-1/2 top-4 z-10 w-fit max-w-[calc(100dvw-5rem)] -translate-x-1/2 rounded-2xl bg-black/70 px-4 py-2 text-white backdrop-blur">
-            <EngagementBar targetType="gallery" targetId={current.id} />
+            <EngagementBar
+              targetType="gallery"
+              targetId={current.id}
+              shareUrl={`/gallery?item=${current.id}`}
+            />
             <div className="max-h-[50dvh] overflow-y-auto">
               <CommentSection targetType="gallery" targetId={current.id} />
             </div>

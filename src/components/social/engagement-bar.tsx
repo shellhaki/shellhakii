@@ -132,7 +132,6 @@ function EngagementBarInner({
     };
   }, [targetType, targetId, initial]);
 
-  const url = shareUrl ?? (typeof window !== "undefined" ? window.location.href : "");
   const commentCount = summary?.comments ?? 0;
 
   return (
@@ -163,7 +162,7 @@ function EngagementBarInner({
         <MessageCircle aria-hidden className="size-4" />
         <span>{summary ? commentCount : ""}</span>
       </button>
-      <ShareButton url={url} />
+      <ShareButton url={shareUrl} />
     </div>
   );
 }

@@ -13,7 +13,10 @@ export function ProjectCard({ project: p }: { project: Project }) {
   const [commentsOpen, setCommentsOpen] = useState(false);
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line transition-colors hover:border-muted/50">
+    <article
+      id={`project-${p.id}`}
+      className="group flex h-full scroll-mt-24 flex-col overflow-hidden rounded-2xl border border-line transition-colors hover:border-muted/50"
+    >
       {p.thumbnailUrl && (
         <div className="aspect-video overflow-hidden bg-pill">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -59,6 +62,7 @@ export function ProjectCard({ project: p }: { project: Project }) {
           <EngagementBar
             targetType="project"
             targetId={p.id}
+            shareUrl={`/projects#project-${p.id}`}
             onCommentsClick={() => setCommentsOpen((v) => !v)}
           />
           {commentsOpen && (

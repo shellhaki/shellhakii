@@ -181,6 +181,43 @@ it("AC-U4: like is optimistic, then rolls back with an error on failure", async 
   expect(rolledBack).toHaveAttribute("aria-pressed", "false");
 });
 
+it("EB-share: passes shareUrl through and resolves the href at click time", async () => {
+  const seen: string[] = [];
+  Object.defineProperty(window.navigator, "clipboard", {
+    value: {
+      writeText: vi.fn(async (text: string) => {
+        seen.push(text);
+      }),
+    },
+    configurable: true,
+  });
+  window.history.pushState({}, "", "/list");
+  const first = render(
+    <ViewerProvider>
+      <EngagementBar targetType="post" targetId="a" shareUrl="/posts/abc" />
+    </ViewerProvider>,
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Copy link" }));
+  await waitFor(() => {
+    expect(seen).toEqual([`${window.location.origin}/posts/abc`]);
+  });
+  first.unmount();
+
+  seen.length = 0;
+  window.history.pushState({}, "", "/list");
+  render(
+    <ViewerProvider>
+      <EngagementBar targetType="post" targetId="b" />
+    </ViewerProvider>,
+  );
+  // Nothing is frozen at render: moving before the click changes what is copied.
+  window.history.pushState({}, "", "/elsewhere");
+  fireEvent.click(screen.getByRole("button", { name: "Copy link" }));
+  await waitFor(() => {
+    expect(seen).toEqual([`${window.location.origin}/elsewhere`]);
+  });
+});
+
 it("AC-U9: all controls have accessible names and touch-sized targets", async () => {
   stubFetch();
   render(
