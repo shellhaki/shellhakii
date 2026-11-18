@@ -1,17 +1,23 @@
 import { getMedia } from "@/lib/media";
 import { getProjects } from "@/lib/projects";
+import { listPosts } from "@/lib/social/posts";
 import { logout } from "./actions";
 import { CaptionEditor } from "./caption-editor";
 import { DeleteButton } from "./delete-button";
 import { MediaUploader } from "./media-uploader";
 import { Newsletter } from "./newsletter";
+import { PostsSection } from "./posts-section";
 import { ProjectForm } from "./project-form";
 import { ProjectRow } from "./project-row";
 import { RefreshButton } from "./refresh-button";
 import { ghostButton } from "@/lib/ui";
 
 export async function Dashboard() {
-  const [projects, media] = await Promise.all([getProjects(), getMedia()]);
+  const [projects, media, { posts }] = await Promise.all([
+    getProjects(),
+    getMedia(),
+    listPosts({ limit: 20 }),
+  ]);
 
   return (
     <div className="space-y-16 pb-8">
@@ -47,6 +53,8 @@ export async function Dashboard() {
           </ul>
         )}
       </section>
+
+      <PostsSection posts={posts} />
 
       <section aria-labelledby="media-h" className="space-y-6">
         <h2 id="media-h" className="font-serif text-xl font-semibold">

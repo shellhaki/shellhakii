@@ -1,0 +1,10 @@
+src/app/posts/*
+src/app/api/posts/*
+src/app/admin/posts-section*
+src/app/layout.tsx
+src/app/admin/dashboard.tsx
+src/components/project-card*
+src/components/nav*
+src/lib/site.ts
+src/app/gallery/gallery-grid*
+src/app/articles/[[]id]/*

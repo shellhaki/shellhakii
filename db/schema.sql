@@ -52,3 +52,61 @@ create table if not exists digests (
   recipients integer not null,
   sent_at    timestamptz not null default now()
 );
+
+-- Social layer (specs/social-spec.md section 3).
+alter table subscribers add column if not exists display_name text;
+alter table subscribers add column if not exists email_verified_at timestamptz;
+
+create table if not exists otp_codes (
+  id         uuid primary key default gen_random_uuid(),
+  email      text not null,
+  code_hash  text not null,
+  expires_at timestamptz not null,
+  attempts   integer not null default 0,
+  used_at    timestamptz,
+  created_at timestamptz not null default now()
+);
+create index if not exists otp_codes_email_idx on otp_codes (email, created_at desc);
+
+create table if not exists sessions (
+  id                uuid primary key default gen_random_uuid(),
+  subscriber_id     uuid not null references subscribers (id) on delete cascade,
+  family_id         uuid not null,
+  refresh_hash      text not null unique,
+  created_at        timestamptz not null default now(),
+  family_created_at timestamptz not null default now(),
+  expires_at        timestamptz not null,
+  rotated_at        timestamptz,
+  revoked_at        timestamptz,
+  user_agent        text
+);
+create index if not exists sessions_family_idx on sessions (family_id);
+create index if not exists sessions_subscriber_idx on sessions (subscriber_id);
+
+create table if not exists posts (
+  id         uuid primary key default gen_random_uuid(),
+  body       text not null check (char_length(body) between 1 and 500),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+create index if not exists posts_created_idx on posts (created_at desc, id desc);
+
+create table if not exists likes (
+  subscriber_id uuid not null references subscribers (id) on delete cascade,
+  target_type   text not null check (target_type in ('post', 'project', 'article', 'gallery')),
+  target_id     text not null,
+  created_at    timestamptz not null default now(),
+  primary key (subscriber_id, target_type, target_id)
+);
+create index if not exists likes_target_idx on likes (target_type, target_id);
+
+create table if not exists comments (
+  id            uuid primary key default gen_random_uuid(),
+  subscriber_id uuid not null references subscribers (id) on delete cascade,
+  target_type   text not null check (target_type in ('post', 'project', 'article', 'gallery')),
+  target_id     text not null,
+  body          text not null check (char_length(body) between 1 and 1000),
+  created_at    timestamptz not null default now(),
+  deleted_at    timestamptz
+);
+create index if not exists comments_target_idx on comments (target_type, target_id, created_at desc, id desc);

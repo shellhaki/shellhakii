@@ -30,16 +30,8 @@ type GithubRepo = {
   fork: boolean;
 };
 
-/** Public, non-fork repos, most recently pushed first. Throws on API failure (not cached). */
-export async function getRepos(): Promise<Repo[]> {
-  "use cache";
-  cacheLife({ stale: 60, revalidate: 1800, expire: 86400 });
-  cacheTag("repos");
-
-  const user = requireEnv("GITHUB_USERNAME");
-  const token = process.env.GITHUB_TOKEN;
-
-  const res = await fetch(
+async function fetchRepos(user: string, token: string | undefined) {
+  return fetch(
     `https://api.github.com/users/${encodeURIComponent(user)}/repos?per_page=100&sort=pushed&type=owner`,
     {
       headers: {
@@ -50,7 +42,31 @@ export async function getRepos(): Promise<Repo[]> {
       },
     },
   );
-  if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+}
+
+/**
+ * Cached fetch. Never throws inside the cache scope (a throw there fails prerendering);
+ * returns null on failure and caches that briefly so it retries soon.
+ */
+async function loadRepos(): Promise<Repo[] | null> {
+  "use cache";
+  cacheTag("repos");
+
+  const user = requireEnv("GITHUB_USERNAME");
+  const token = process.env.GITHUB_TOKEN || undefined;
+
+  let res = await fetchRepos(user, token).catch(() => null);
+  // A bad or expired token makes GitHub answer 401; public repos still load anonymously.
+  if (res?.status === 401 && token) {
+    console.error("GITHUB_TOKEN rejected by GitHub (401); retrying without it");
+    res = await fetchRepos(user, undefined).catch(() => null);
+  }
+  if (!res?.ok) {
+    console.error(`GitHub API ${res?.status ?? "network error"}`);
+    cacheLife({ stale: 30, revalidate: 60, expire: 300 });
+    return null;
+  }
+  cacheLife({ stale: 60, revalidate: 1800, expire: 86400 });
 
   const data = (await res.json()) as GithubRepo[];
   return data
@@ -69,4 +85,11 @@ export async function getRepos(): Promise<Repo[]> {
       pushedAt: r.pushed_at,
       createdAt: r.created_at,
     }));
+}
+
+/** Public, non-fork repos, most recently pushed first. Throws when GitHub is unavailable. */
+export async function getRepos(): Promise<Repo[]> {
+  const repos = await loadRepos();
+  if (!repos) throw new Error("GitHub repos unavailable");
+  return repos;
 }

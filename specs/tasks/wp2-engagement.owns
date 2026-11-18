@@ -1,0 +1,9 @@
+src/lib/social/engagement*
+src/lib/social/comments*
+src/lib/social/targets*
+src/lib/social/store*
+src/lib/social/posts*
+src/app/api/likes/*
+src/app/api/comments/*
+src/app/api/engagement/*
+src/app/api/admin/posts/*

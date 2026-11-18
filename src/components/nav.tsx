@@ -9,6 +9,7 @@ import {
   House,
   Image as ImageIcon,
   Mail,
+  MessagesSquare,
   PenLine,
   type LucideIcon,
 } from "lucide-react";
@@ -17,6 +18,7 @@ import { ThemeToggle } from "./theme-toggle";
 
 const icons: Record<(typeof nav)[number]["icon"], LucideIcon> = {
   home: House,
+  posts: MessagesSquare,
   projects: FolderOpen,
   repos: GitFork,
   articles: PenLine,
@@ -28,7 +30,7 @@ function NavView({ pathname }: { pathname: string | null }) {
   return (
     <nav
       aria-label="Main"
-      className="flex items-center gap-0.5 rounded-full border border-line bg-background/80 p-1 backdrop-blur sm:gap-1"
+      className="flex max-w-full flex-nowrap items-center gap-0.5 whitespace-nowrap rounded-full border border-line bg-background/80 p-1 backdrop-blur"
     >
       {nav.map(({ href, label, icon }) => {
         const Icon = icons[icon];
@@ -40,7 +42,7 @@ function NavView({ pathname }: { pathname: string | null }) {
             href={href}
             aria-label={label}
             aria-current={active ? "page" : undefined}
-            className={`flex h-9 items-center gap-2 rounded-full px-2 text-sm font-medium transition-colors hover:bg-line focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground sm:px-2.5 md:px-3 ${
+            className={`flex h-9 shrink-0 items-center gap-2 rounded-full px-1.5 text-sm font-medium transition-colors hover:bg-line focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground sm:px-2 md:px-3 ${
               active ? "bg-line" : ""
             }`}
           >

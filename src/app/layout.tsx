@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Mea_Culpa, Newsreader } from "next/font/google";
+import { ViewerProvider } from "@/components/social/viewer-provider";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { site } from "@/lib/site";
@@ -46,9 +47,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="flex min-h-full flex-col">
-        <Header />
-        <main className="flex-1 px-4 sm:px-6">{children}</main>
-        <Footer />
+        <ViewerProvider>
+          <Header />
+          <main className="flex-1 px-4 sm:px-6">{children}</main>
+          <Footer />
+        </ViewerProvider>
       </body>
     </html>
   );

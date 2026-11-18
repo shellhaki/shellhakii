@@ -14,6 +14,7 @@ export const site = {
 
 export const nav = [
   { href: "/", label: "Home", icon: "home" },
+  { href: "/posts", label: "Posts", icon: "posts" },
   { href: "/projects", label: "Projects", icon: "projects" },
   { href: "/repos", label: "Repos", icon: "repos" },
   { href: "/articles", label: "Articles", icon: "articles" },

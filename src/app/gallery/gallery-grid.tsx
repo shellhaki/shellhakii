@@ -2,6 +2,8 @@
 
 import { ChevronLeft, ChevronRight, Play, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { CommentSection } from "@/components/social/comment-section";
+import { EngagementBar } from "@/components/social/engagement-bar";
 import type { Media } from "@/lib/media";
 
 type Filter = "all" | "image" | "video";
@@ -110,9 +112,21 @@ export function GalleryGrid({ media }: { media: Media[] }) {
         }}
         className="m-0 h-dvh max-h-none w-dvw max-w-none bg-transparent p-0 backdrop:bg-black/90"
       >
+        {/* Engagement for the current item. The `dark` class pins the panel to
+            the dark tokens so it stays readable on the black backdrop in
+            either theme. */}
+        {current && (
+          <div className="dark fixed left-1/2 top-4 z-10 w-fit max-w-[calc(100dvw-5rem)] -translate-x-1/2 rounded-2xl bg-black/70 px-4 py-2 text-white backdrop-blur">
+            <EngagementBar targetType="gallery" targetId={current.id} />
+            <div className="max-h-[50dvh] overflow-y-auto">
+              <CommentSection targetType="gallery" targetId={current.id} />
+            </div>
+          </div>
+        )}
+
         {current && (
           <div
-            className="flex size-full items-center justify-center p-4 sm:p-12"
+            className="flex size-full items-center justify-center p-4 pt-24 sm:p-12"
             onClick={(e) => e.target === e.currentTarget && setOpen(null)}
           >
             {current.kind === "image" ? (

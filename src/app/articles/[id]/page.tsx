@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import { CommentSection } from "@/components/social/comment-section";
+import { EngagementBar } from "@/components/social/engagement-bar";
 import { formatDate } from "@/lib/format";
 import { getArticles } from "@/lib/medium";
 
@@ -24,7 +26,11 @@ export async function generateMetadata({
     : { title: "Article" };
 }
 
-async function Article({ params }: { params: PageProps<"/articles/[id]">["params"] }) {
+export async function Article({
+  params,
+}: {
+  params: PageProps<"/articles/[id]">["params"];
+}) {
   const article = await find((await params).id);
   if (!article) notFound();
 
@@ -37,14 +43,29 @@ async function Article({ params }: { params: PageProps<"/articles/[id]">["params
         <p className="mt-4 font-mono text-xs text-muted">
           {formatDate(article.publishedAt)} · {article.readMinutes} min read
         </p>
+        <div className="mt-4">
+          <EngagementBar
+            targetType="article"
+            targetId={article.id}
+            shareUrl={`/articles/${article.id}`}
+          />
+        </div>
       </header>
 
       <div className="article mt-10" dangerouslySetInnerHTML={{ __html: article.html }} />
 
       <footer className="mt-14 border-t border-line pt-6">
+        <EngagementBar
+          targetType="article"
+          targetId={article.id}
+          shareUrl={`/articles/${article.id}`}
+        />
+        <div className="mt-4">
+          <CommentSection targetType="article" targetId={article.id} />
+        </div>
         <a
           href={article.url}
-          className="inline-flex items-center gap-1 text-sm text-foreground underline decoration-muted/50 underline-offset-4 transition-colors hover:decoration-foreground"
+          className="mt-6 inline-flex items-center gap-1 text-sm text-foreground underline decoration-muted/50 underline-offset-4 transition-colors hover:decoration-foreground"
         >
           Read on Medium <ArrowUpRight className="size-4" aria-hidden />
         </a>

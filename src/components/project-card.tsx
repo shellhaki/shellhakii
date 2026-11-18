@@ -1,10 +1,17 @@
+"use client";
+
+import { useState } from "react";
 import { ArrowUpRight } from "lucide-react";
+import { CommentSection } from "@/components/social/comment-section";
+import { EngagementBar } from "@/components/social/engagement-bar";
 import type { Project } from "@/lib/projects";
 
 const chip =
   "inline-flex items-center gap-1 rounded-full border border-line px-3 py-1 text-sm transition-colors hover:bg-line focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
 
 export function ProjectCard({ project: p }: { project: Project }) {
+  const [commentsOpen, setCommentsOpen] = useState(false);
+
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line transition-colors hover:border-muted/50">
       {p.thumbnailUrl && (
@@ -47,6 +54,19 @@ export function ProjectCard({ project: p }: { project: Project }) {
             )}
           </div>
         )}
+
+        <div className="mt-4 border-t border-line pt-3">
+          <EngagementBar
+            targetType="project"
+            targetId={p.id}
+            onCommentsClick={() => setCommentsOpen((v) => !v)}
+          />
+          {commentsOpen && (
+            <div className="mt-2">
+              <CommentSection targetType="project" targetId={p.id} />
+            </div>
+          )}
+        </div>
       </div>
     </article>
   );
